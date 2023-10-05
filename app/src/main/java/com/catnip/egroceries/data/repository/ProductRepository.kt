@@ -1,8 +1,6 @@
 package com.catnip.egroceries.data.repository
 
 import com.catnip.egroceries.data.dummy.DummyCategoryDataSource
-import com.catnip.egroceries.data.dummy.DummyProductDataSourceImpl
-import com.catnip.egroceries.data.local.database.datasource.CartDataSource
 import com.catnip.egroceries.data.local.database.datasource.ProductDataSource
 import com.catnip.egroceries.data.local.database.mapper.toProductList
 import com.catnip.egroceries.model.Category
@@ -20,6 +18,10 @@ Github : https://github.com/hermasyp
  **/
 interface ProductRepository {
     fun getCategories(): List<Category>
+    /* list of Product karena repository ini akan menampilkan data ke layer view
+        jadi tidak boleh ada entity. pakenya model nya atau view objectnya
+    * */
+    fun getProducts(): Flow<ResultWrapper<List<Product>>>
 }
 
 class ProductRepositoryImpl(
@@ -29,6 +31,16 @@ class ProductRepositoryImpl(
 
     override fun getCategories(): List<Category> {
         return dummyCategoryDataSource.getProductCategory()
+    }
+
+    override fun getProducts(): Flow<ResultWrapper<List<Product>>> {
+
+        return productDataSource.getAllProducts().map {
+            proceed { it.toProductList() }
+        }.onStart {
+            emit(ResultWrapper.Loading())
+            delay(2000)
+        }
     }
 
 }

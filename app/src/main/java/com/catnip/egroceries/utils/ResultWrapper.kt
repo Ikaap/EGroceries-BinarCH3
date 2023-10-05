@@ -1,5 +1,6 @@
 package com.catnip.egroceries.utils
 
+import com.catnip.egroceries.model.CartProduct
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch

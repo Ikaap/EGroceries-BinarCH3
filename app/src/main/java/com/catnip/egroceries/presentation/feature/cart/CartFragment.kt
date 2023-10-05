@@ -40,16 +40,19 @@ class CartFragment : Fragment() {
     private val adapter: CartListAdapter by lazy {
         CartListAdapter(object : CartListener {
             override fun onPlusTotalItemCartClicked(cart: Cart) {
+                viewModel.increaseCart(cart)
             }
 
             override fun onMinusTotalItemCartClicked(cart: Cart) {
+                viewModel.decreaseCart(cart)
             }
 
             override fun onRemoveCartClicked(cart: Cart) {
+                viewModel.deleteCart(cart)
             }
 
             override fun onUserDoneEditingNotes(cart: Cart) {
-
+                viewModel.setCartNotes(cart)
             }
         })
     }
@@ -81,7 +84,39 @@ class CartFragment : Fragment() {
     }
 
     private fun observeData() {
+        viewModel.cartList.observe(viewLifecycleOwner){ result->
+            result.proceedWhen(
+                doOnSuccess = {
+                    binding.rvCart.isVisible = true
+                    binding.layoutState.root.isVisible = false
+                    binding.layoutState.pbLoading.isVisible = false
+                    binding.layoutState.tvError.isVisible = false
+                    result.payload?.let { (carts, totalPrice) ->
+                        adapter.submitData(carts)
+                        binding.tvTotalPrice.text = totalPrice.toCurrencyFormat()
+                    }
+                },
+                doOnError = { err ->
+                    binding.layoutState.root.isVisible = true
+                    binding.layoutState.tvError.isVisible = true
+                    binding.layoutState.tvError.text = err.exception?.message.orEmpty()
+                    binding.layoutState.pbLoading.isVisible = false
 
+                },
+                doOnLoading = {
+                    binding.layoutState.root.isVisible = true
+                    binding.layoutState.tvError.isVisible = false
+                    binding.layoutState.pbLoading.isVisible = true
+                    binding.rvCart.isVisible = false
+                },
+                doOnEmpty = {
+                    binding.layoutState.root.isVisible = true
+                    binding.layoutState.tvError.isVisible = true
+                    binding.layoutState.pbLoading.isVisible = false
+                    binding.rvCart.isVisible = false
+                }
+            )
+        }
     }
 
 }
