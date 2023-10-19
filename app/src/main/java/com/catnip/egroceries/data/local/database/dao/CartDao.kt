@@ -7,7 +7,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.catnip.egroceries.data.local.database.entity.CartEntity
-import com.catnip.egroceries.data.local.database.relation.CartProductRelation
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -18,16 +17,16 @@ Github : https://github.com/hermasyp
 interface CartDao {
 
     @Query("SELECT * FROM CARTS")
-    fun getAllCarts(): Flow<List<CartProductRelation>>
+    fun getAllCarts(): Flow<List<CartEntity>>
 
     @Query("SELECT * FROM CARTS WHERE id == :cartId")
-    fun getCartById(cartId: Int): Flow<CartProductRelation>
+    fun getCartById(cartId: Int): Flow<CartEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCart(cart: CartEntity): Long
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCarts(product: List<CartEntity>)
+    suspend fun insertCarts(cart: List<CartEntity>)
 
     @Delete
     suspend fun deleteCart(cart: CartEntity): Int
