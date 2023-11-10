@@ -120,8 +120,8 @@ dependencies {
     implementation("io.insert-koin:koin-android:3.5.0")
 
     // unit testing
-    testImplementation ("io.mockk:mockk-android:1.13.8")
-    testImplementation ("io.mockk:mockk-agent:1.13.8")
-    testImplementation ("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
-    testImplementation ("app.cash.turbine:turbine:1.0.0")
+    testImplementation("io.mockk:mockk-android:1.13.8")
+    testImplementation("io.mockk:mockk-agent:1.13.8")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.2")
+    testImplementation("app.cash.turbine:turbine:1.0.0")
 }

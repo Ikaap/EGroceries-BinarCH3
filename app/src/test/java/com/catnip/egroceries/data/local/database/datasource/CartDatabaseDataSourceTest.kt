@@ -1,5 +1,6 @@
 package com.catnip.egroceries.data.local.database.datasource
 
+import app.cash.turbine.test
 import com.catnip.egroceries.data.local.database.dao.CartDao
 import com.catnip.egroceries.data.local.database.entity.CartEntity
 import io.mockk.MockKAnnotations
@@ -7,9 +8,9 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.mockk
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.*
-
 import org.junit.Before
 import org.junit.Test
 
@@ -28,10 +29,38 @@ class CartDatabaseDataSourceTest {
 
     @Test
     fun getAllCarts() {
+        val itemEntityMock1 = mockk<CartEntity>()
+        val itemEntityMock2 = mockk<CartEntity>()
+        val listEntityMock = listOf(itemEntityMock1, itemEntityMock2)
+        val flowMockk = flow {
+            emit(listEntityMock)
+        }
+        coEvery { cartDao.getAllCarts() } returns flowMockk
+        runTest {
+            cartDataSource.getAllCarts().test {
+                val result = awaitItem()
+                assertEquals(listEntityMock, result)
+                assertEquals(listEntityMock.size, result.size)
+                assertEquals(itemEntityMock1, result[0])
+                assertEquals(itemEntityMock2, result[1])
+                awaitComplete()
+            }
+        }
     }
 
     @Test
     fun getCartById() {
+        val mockItemEntity = mockk<CartEntity>()
+        val flowMock = flow {
+            emit(mockItemEntity)
+        }
+        coEvery { cartDao.getCartById(any()) } returns flowMock
+        runTest {
+            cartDataSource.getCartById(1).test {
+                assertEquals(mockItemEntity, awaitItem())
+                awaitComplete()
+            }
+        }
     }
 
     @Test
@@ -71,7 +100,9 @@ class CartDatabaseDataSourceTest {
     fun deleteAll() {
         runTest {
             coEvery { cartDao.deleteAll() } returns Unit
+            val result = cartDataSource.deleteAll()
+            coVerify { cartDao.deleteAll() }
+            assertEquals(result, Unit)
         }
-
     }
 }
