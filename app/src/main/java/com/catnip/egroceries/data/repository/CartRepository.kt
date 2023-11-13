@@ -14,9 +14,11 @@ import com.catnip.egroceries.utils.proceed
 import com.catnip.egroceries.utils.proceedFlow
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onStart
+import java.lang.Exception
 
 /**
 Written with love by Muhammad Hermas Yuda Pamungkas
@@ -60,6 +62,8 @@ class CartRepositoryImpl(
                 } else {
                     it
                 }
+            }.catch {
+                emit(ResultWrapper.Error(Exception(it)))
             }
             .onStart {
                 emit(ResultWrapper.Loading())
