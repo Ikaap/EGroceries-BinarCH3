@@ -250,6 +250,15 @@ class CartRepositoryImplTest {
 
     @Test
     fun `decrease cart when quantity less than or equals 0`() {
+        val mockCart = Cart(
+            id = 1,
+            productId = 1,
+            productName = "Sate",
+            productPrice = 12000.0,
+            productImgUrl = "url",
+            itemQuantity = 0,
+            itemNotes = "notes"
+        )
         coEvery { localDataSource.deleteCart(any()) } returns 1
         coEvery { localDataSource.updateCart(any()) } returns 1
         runTest {
@@ -269,6 +278,15 @@ class CartRepositoryImplTest {
 
     @Test
     fun `decrease cart when quantity more than 0`() {
+        val mockCart = Cart(
+            id = 1,
+            productId = 1,
+            productName = "Sate",
+            productPrice = 12000.0,
+            productImgUrl = "url",
+            itemQuantity = 2,
+            itemNotes = "notes"
+        )
         coEvery { localDataSource.deleteCart(any()) } returns 1
         coEvery { localDataSource.updateCart(any()) } returns 1
         runTest {
@@ -338,7 +356,7 @@ class CartRepositoryImplTest {
     }
 
     @Test
-    fun `test order`(){
+    fun `test order`() {
         runTest {
             val mockCarts = listOf(
                 Cart(

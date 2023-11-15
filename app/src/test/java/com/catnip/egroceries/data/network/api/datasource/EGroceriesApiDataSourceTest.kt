@@ -35,7 +35,7 @@ class EGroceriesApiDataSourceTest {
     @Test
     fun getProducts() {
         runTest {
-            val mockResponse = mockk<ProductsResponse>(relaxed = true)
+            val mockResponse = mockk<ProductsResponse>()
             coEvery { service.getProducts(any()) } returns mockResponse
             val response = dataSource.getProducts("makanan")
             coVerify { service.getProducts(any()) } // memverivikasi apakah service sudah terpanggil
